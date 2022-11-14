@@ -21,5 +21,7 @@ class BooksViewModel @Inject constructor() : ViewModel() {
         _books.remove(book)
     }
 
-
+    fun addBook(book: Book) {
+        _books.add(book.copy(id = _books.maxOfOrNull { it.id }?.plus(1) ?: 1))
+    }
 }
