@@ -13,7 +13,14 @@ fun NavGraph(navController: NavHostController) {
         startDestination = Screen.BookList.route
     ) {
         composable(Screen.BookList.route) {
-            BooksListScreen()
+            BooksListScreen(
+                navigateToAddBookScreen = {
+                    navController.navigate(Screen.AddBook.route)
+                }
+            )
+        }
+        composable(Screen.AddBook.route) {
+
         }
     }
 }
