@@ -13,7 +13,7 @@ class BooksViewModel @Inject constructor() : ViewModel() {
         Book(2, "Book 2", "Author 2", 1992, false),
         Book(3, "Book 3", "Author 3", 1993, true),
         Book(4, "Book 4", "Author 4", 1994, false),
-        Book(5, "Book 5", "Author 5", 1995, true),
+//        Book(5, "Book 5", "Author 5", 1995, true),
     )
     val books: List<Book> get() = _books
 
@@ -21,7 +21,7 @@ class BooksViewModel @Inject constructor() : ViewModel() {
         _books.remove(book)
     }
 
-    fun addBook(book: Book) {
+    fun addBook(book: Book) { // TODO: fix after add, the list is not updated
         _books.add(book.copy(id = _books.maxOfOrNull { it.id }?.plus(1) ?: 1))
     }
 }
