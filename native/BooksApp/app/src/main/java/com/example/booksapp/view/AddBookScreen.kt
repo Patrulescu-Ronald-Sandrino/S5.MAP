@@ -48,7 +48,7 @@ fun AddBookScreen(
         content = { padding ->
             AddBookContent(
                 padding = padding,
-                addBook = { book -> viewModel.addBook(book) },
+                addBook = viewModel::addBook,
                 navigateBack = navigateBack,
             )
         }
@@ -67,7 +67,7 @@ fun AddBookContent(
     var lent: Boolean by remember { mutableStateOf(false) }
     val focusRequester = FocusRequester()
     val context = LocalContext.current
-    val showError =
+    val showMessage =
         { text: CharSequence -> Toast.makeText(context, text, Toast.LENGTH_SHORT).show() }
 
     Column(
@@ -125,12 +125,12 @@ fun AddBookContent(
 
         Button(onClick = {
             if (title.isBlank() || author.isBlank() || year.isBlank()) {
-                showError("Please fill all fields")
+                showMessage("Please fill all fields")
             } else if (year.toIntOrNull() == null || year.toInt() < 0) {
-                showError("Year must be a positive integer")
+                showMessage("Year must be a positive integer")
             } else {
                 addBook(Book(0, title, author, year.toInt(), lent))
-                showError("Book added")
+                showMessage("Book added")
                 navigateBack()
             }
         }) {
