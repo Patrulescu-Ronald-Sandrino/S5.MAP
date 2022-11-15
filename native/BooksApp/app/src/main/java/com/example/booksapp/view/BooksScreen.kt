@@ -32,14 +32,10 @@ fun BooksScreen(
     val books by viewModel.books.observeAsState()
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(text = "Books") }
-            )
-        },
-        content = { padding ->
+        topBar = { TopAppBar(title = { Text(text = "Books") }) },
+        content = {
             BooksContent(
-                padding = padding,
+                padding = it,
                 books = books?.toList() ?: emptyList(),
                 navigateToBookScreen = navigateToBookScreen,
                 deleteBook = { book ->

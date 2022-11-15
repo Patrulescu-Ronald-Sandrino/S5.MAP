@@ -4,8 +4,6 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -32,22 +30,10 @@ fun AddBookScreen(
     navigateBack: () -> Unit
 ) {
     Scaffold(
-        topBar = {
-             TopAppBar(
-                 title = { Text(text = "Add Book") },
-                    navigationIcon = {
-                        IconButton(onClick = navigateBack) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "Back"
-                            )
-                        }
-                    }
-             )
-        },
-        content = { padding ->
+        topBar = { TopBar("Add book", navigateBack) },
+        content = {
             AddBookContent(
-                padding = padding,
+                padding = it,
                 addBook = viewModel::addBook,
                 navigateBack = navigateBack,
             )

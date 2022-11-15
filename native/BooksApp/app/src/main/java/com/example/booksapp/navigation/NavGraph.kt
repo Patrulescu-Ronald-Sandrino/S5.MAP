@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.booksapp.view.AddBookScreen
 import com.example.booksapp.view.BooksScreen
+import com.example.booksapp.view.ViewBookScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -35,8 +36,12 @@ fun NavGraph(navController: NavHostController) {
             route = "${Screen.ViewBook.route}/{id}",
             arguments = listOf(navArgument("id") { type = IntType })
         ) {
-            // TODO: implement view book screen
-            Text("View book screen")
+            backStackEntry -> val id = backStackEntry.arguments?.getInt("id") ?: 0
+            ViewBookScreen(
+                id = id,
+                navigateToUpdateBookScreen = { navController.navigate("${Screen.UpdateBook.route}/$id") },
+                navigateBack = navController::popBackStack
+            )
         }
 
         composable(
@@ -44,7 +49,7 @@ fun NavGraph(navController: NavHostController) {
             arguments = listOf(navArgument("id") { type = IntType })
         ) {
             // TODO: implement update book screen
-            Text("Update book screen")
+            Text("TODO: Update book screen")
         }
 
 

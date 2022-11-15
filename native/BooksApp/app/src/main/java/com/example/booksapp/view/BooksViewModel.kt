@@ -1,5 +1,8 @@
 package com.example.booksapp.view
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -38,5 +41,12 @@ class BooksViewModel @Inject constructor() : ViewModel() {
 
         println(_books.value)
 
+    }
+
+    var book by mutableStateOf(Book(0, "", "", 0, false))
+        private set
+
+    fun getBook(id: Int) {
+        book = _books.value?.first { it.id == id } ?: book
     }
 }
