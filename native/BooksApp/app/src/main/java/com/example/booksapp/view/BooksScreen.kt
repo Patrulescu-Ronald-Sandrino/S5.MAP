@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -28,7 +29,7 @@ fun BooksScreen(
 ) {
 //    val books by viewModel.books.observeAsState()
 //    val books by remember { mutableStateOf(viewModel.books) }
-    val books by viewModel.books.collectAsState()
+    val books by viewModel.books.observeAsState()
 
     Scaffold(
         topBar = {
@@ -39,7 +40,7 @@ fun BooksScreen(
         content = { padding ->
             BooksContent(
                 padding = padding,
-                books = books,
+                books = books?.toList() ?: emptyList(),
                 navigateToBookScreen = navigateToBookScreen,
                 deleteBook = { book ->
                     viewModel.deleteBook(book)

@@ -74,6 +74,9 @@ dependencies {
 
 
     implementation 'androidx.compose.material3:material3:1.0.0-alpha02'
+
+    //observeAsState()
+    implementation "androidx.compose.runtime:runtime-livedata:1.2.0"
 }
 
 kapt {
