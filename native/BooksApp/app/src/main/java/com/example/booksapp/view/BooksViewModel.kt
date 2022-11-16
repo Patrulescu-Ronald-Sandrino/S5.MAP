@@ -46,7 +46,29 @@ class BooksViewModel @Inject constructor() : ViewModel() {
     var book by mutableStateOf(Book(0, "", "", 0, false))
         private set
 
-    fun getBook(id: Int) {
+    fun getBook(id: Int) { // TODO: add/remove = viewModelScope.launch(Dispatchers.IO)
         book = _books.value?.first { it.id == id } ?: book
+    }
+
+    fun updateTitle(title: String) {
+        book = book.copy(title = title)
+    }
+
+    fun updateAuthor(author: String) {
+        book = book.copy(author = author)
+    }
+
+    fun updateYear(year: Int) {
+        book = book.copy(year = year)
+    }
+
+    fun updateLent(lent: Boolean) {
+        book = book.copy(lent = lent)
+    }
+
+    fun updateBook(book: Book) = viewModelScope.launch(Dispatchers.IO) {
+        println(_books.value)
+        _books.postValue(_books.value?.map { if (it.id == book.id) book else it })
+        println(_books.value)
     }
 }

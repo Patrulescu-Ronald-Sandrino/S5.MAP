@@ -1,6 +1,5 @@
 package com.example.booksapp.navigation
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType.Companion.IntType
@@ -9,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.booksapp.view.AddBookScreen
 import com.example.booksapp.view.BooksScreen
+import com.example.booksapp.view.UpdateBookScreen
 import com.example.booksapp.view.ViewBookScreen
 
 @Composable
@@ -48,8 +48,8 @@ fun NavGraph(navController: NavHostController) {
             route = "${Screen.UpdateBook.route}/{id}",
             arguments = listOf(navArgument("id") { type = IntType })
         ) {
-            // TODO: implement update book screen
-            Text("TODO: Update book screen")
+            backStackEntry -> val id = backStackEntry.arguments?.getInt("id") ?: 0
+            UpdateBookScreen(id = id, navigateBack = navController::popBackStack)
         }
 
 
