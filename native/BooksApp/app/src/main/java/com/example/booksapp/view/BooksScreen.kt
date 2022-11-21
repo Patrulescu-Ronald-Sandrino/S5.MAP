@@ -26,20 +26,17 @@ fun BooksScreen(
     navigateToBookScreen: (id: Int) -> Unit,
     navigateToAddBookScreen: () -> Unit,
 ) {
-//    val books by viewModel.books.observeAsState()
-//    val books by remember { mutableStateOf(viewModel.books) }
-
+    val books by viewModel.books.collectAsState(initial = emptyList())
 
     Scaffold(
         topBar = { TopAppBar(title = { Text(text = "Books") }) },
         content = {
             BooksContent(
                 padding = it,
-                books = viewModel.books,
+                books = books,
                 navigateToBookScreen = navigateToBookScreen,
-                deleteBook = { book ->
-                    viewModel.deleteBook(book)
-                }
+                deleteBook = viewModel::deleteBook,
+                addSomeBooks = viewModel::addSomeBooks,
             )
         },
         floatingActionButton = {
@@ -59,13 +56,16 @@ fun BooksContent(
     padding: PaddingValues,
     deleteBook: (book: Book) -> Unit,
     navigateToBookScreen: (id: Int) -> Unit,
+    addSomeBooks: () -> Unit = {},
 ) {
-
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(padding)
     ) {
+        item {
+            Button(onClick = { println("clicked"); addSomeBooks() }) { Text(text = "Add some books") }
+        }
         items(books) { book ->
             BookCard(
                 book = book,
