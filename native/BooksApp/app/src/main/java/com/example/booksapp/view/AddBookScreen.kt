@@ -36,7 +36,7 @@ fun AddBookScreen(
         content = {
             AddBookContent(
                 padding = it,
-                addBook = viewModel::addBook,
+                addBook = { book -> viewModel.addBook(book) },
                 navigateBack = navigateBack,
             )
         }

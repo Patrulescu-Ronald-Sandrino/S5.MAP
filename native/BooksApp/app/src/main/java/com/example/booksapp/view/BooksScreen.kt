@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -29,12 +30,15 @@ fun BooksScreen(
 //    val books by viewModel.books.observeAsState()
 //    val books by remember { mutableStateOf(viewModel.books) }
 
+    val uiState = viewModel.uiState
+
+
     Scaffold(
         topBar = { TopAppBar(title = { Text(text = "Books") }) },
         content = {
             BooksContent(
                 padding = it,
-                books = viewModel.books,
+                books = uiState.books,
                 navigateToBookScreen = navigateToBookScreen,
                 deleteBook = { book ->
                     viewModel.deleteBook(book)
@@ -64,12 +68,12 @@ fun BooksContent(
         return
     }
 
-    LazyColumn(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(padding)
     ) {
-        items(books) { book ->
+        books.forEach { book ->
             BookCard(
                 book = book,
                 deleteBook = { deleteBook(book) },
