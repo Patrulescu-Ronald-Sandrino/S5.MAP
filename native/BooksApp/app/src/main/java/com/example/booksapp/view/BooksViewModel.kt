@@ -1,7 +1,7 @@
 package com.example.booksapp.view
 
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -14,6 +14,7 @@ import javax.inject.Inject
 
 
 data class BookState(
+    val lazyListState: LazyListState,
     val book: Book = Book(0, "", "", 0, false),
     val books: List<Book> = listOf(
         Book(1, "Book 1", "Author 1", 1991, true),
@@ -27,7 +28,7 @@ data class BookState(
 @HiltViewModel
 class BooksViewModel @Inject constructor() : ViewModel() {
 
-    var uiState by mutableStateOf(BookState())
+    var uiState by mutableStateOf(BookState(LazyListState()))
         private set
 
 
@@ -45,7 +46,6 @@ class BooksViewModel @Inject constructor() : ViewModel() {
 //        books.clear()
 //        books.addAll(newBooks)
         uiState = uiState.copy(books = uiState.books.toMutableList() + listOf(newBook))
-
         // inainte de W5 100%
         // inainte de W6 75%
         // inainte de W7 50%
