@@ -13,7 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -67,7 +69,8 @@ fun AddBookContent(
             value = title,
             onValueChange = { title = it },
             label = { Text(text = "Title...") },
-            modifier = Modifier.focusRequester(focusRequester)
+            modifier = Modifier.focusRequester(focusRequester),
+            textStyle = TextStyle(color = Color.Magenta)
         )
 
         // used to set the focus on the first TextField
@@ -80,7 +83,8 @@ fun AddBookContent(
         TextField(
             value = author,
             onValueChange = { author = it },
-            label = { Text(text = "Author...") }
+            label = { Text(text = "Author...") },
+            textStyle = TextStyle(color = Color.Magenta)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -94,7 +98,8 @@ fun AddBookContent(
             ),
             value = year,
             onValueChange = { year = it },
-            label = { Text(text = "Year...") }
+            label = { Text(text = "Year...") },
+            textStyle = TextStyle(color = Color.Magenta)
         )
         
         Row (

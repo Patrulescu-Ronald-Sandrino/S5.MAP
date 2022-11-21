@@ -13,7 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -82,11 +84,21 @@ fun UpdateBookContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        TextField(value = book.title, onValueChange = updateTitle, placeholder = { Text("Title") })
+        TextField(
+            value = book.title,
+            onValueChange = updateTitle,
+            placeholder = { Text("Title") },
+            textStyle = TextStyle(color = Color.Magenta)
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        TextField(value = book.author, onValueChange = updateAuthor, placeholder = { Text("Author") })
+        TextField(
+            value = book.author,
+            onValueChange = updateAuthor,
+            placeholder = { Text("Author") },
+            textStyle = TextStyle(color = Color.Magenta)
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -99,7 +111,8 @@ fun UpdateBookContent(
             ),
             value = book.year.toString(),
             onValueChange = { updateYear(it.toInt()) },
-            placeholder = { Text("Year") }
+            placeholder = { Text("Year") },
+            textStyle = TextStyle(color = Color.Magenta)
         )
 
         Spacer(modifier = Modifier.height(8.dp))
