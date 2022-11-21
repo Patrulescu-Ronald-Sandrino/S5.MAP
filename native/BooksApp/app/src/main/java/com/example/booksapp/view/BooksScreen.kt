@@ -2,6 +2,7 @@ package com.example.booksapp.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
@@ -11,7 +12,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -34,6 +34,7 @@ fun BooksScreen(
         content = {
             BooksContent(
                 padding = it,
+                books = viewModel.books,
                 navigateToBookScreen = navigateToBookScreen,
                 deleteBook = { book ->
                     viewModel.deleteBook(book)
@@ -53,14 +54,12 @@ fun BooksScreen(
 
 @Composable
 fun BooksContent(
-    viewModel: BooksViewModel = hiltViewModel(),
     padding: PaddingValues,
+    books: List<Book>,
     deleteBook: (book: Book) -> Unit,
     navigateToBookScreen: (id: Int) -> Unit,
 ) {
-    val books by viewModel.itemLiveData.observeAsState()
-
-    if (books.isNullOrEmpty()) {
+    if (books.isEmpty()) {
         Text(text = "No books!")
         return
     }
@@ -70,14 +69,12 @@ fun BooksContent(
             .fillMaxSize()
             .padding(padding)
     ) {
-        books?.forEach { book ->
-            item {
-                BookCard(
-                    book = book,
-                    deleteBook = { deleteBook(book) },
-                    navigateToBookScreen = navigateToBookScreen,
-                )
-            }
+        items(books) { book ->
+            BookCard(
+                book = book,
+                deleteBook = { deleteBook(book) },
+                navigateToBookScreen = navigateToBookScreen,
+            )
         }
     }
 }
