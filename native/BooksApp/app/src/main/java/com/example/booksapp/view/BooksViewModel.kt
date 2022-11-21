@@ -25,27 +25,39 @@ data class BookState(
     )
 )
 
+fun getBooks(): List<Book> {
+    val books = mutableListOf<Book>()
+
+    for (i in 1..4) {
+        books.add(Book(i, "Book $i", "Author $i", 1990 + i, i % 2 == 1))
+    }
+
+    return books
+}
+
 @HiltViewModel
 class BooksViewModel @Inject constructor() : ViewModel() {
 
     var uiState by mutableStateOf(BookState(LazyListState()))
         private set
 
+    var books by mutableStateOf(getBooks())
+
 
     fun deleteBook(book: Book) = viewModelScope.launch(Dispatchers.IO) {
-//        books = books.toMutableList().also { it -> it.removeIf { it.id == book.id } }
+        books = books.toMutableList().also { it -> it.removeIf { it.id == book.id } }
 //        books.removeIf { it.id == book.id }
-        uiState = uiState.copy(books = uiState.books.toMutableList().also { books -> books.removeIf { it.id == book.id } })
+//        uiState = uiState.copy(books = uiState.books.toMutableList().also { books -> books.removeIf { it.id == book.id } })
     }
 
     // TODO: fix add
     fun addBook(book: Book) /*= viewModelScope.launch(Dispatchers.IO)*/ {
         val newBook = book.copy(id = uiState.books.maxOfOrNull { it.id }?.plus(1) ?: 1)
-//        books = books + listOf(newBook)
+        books = books + listOf(newBook)
 //        val newBooks = books.toMutableList() + listOf(newBook)
 //        books.clear()
 //        books.addAll(newBooks)
-        uiState = uiState.copy(books = uiState.books.toMutableList() + listOf(newBook))
+//        uiState = uiState.copy(books = uiState.books.toMutableList() + listOf(newBook))
         // inainte de W5 100%
         // inainte de W6 75%
         // inainte de W7 50%

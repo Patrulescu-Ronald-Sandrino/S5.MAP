@@ -35,6 +35,7 @@ fun BooksScreen(
         content = {
             BooksContent(
                 padding = it,
+                books = viewModel.books,
                 navigateToBookScreen = navigateToBookScreen,
                 deleteBook = { book ->
                     viewModel.deleteBook(book)
@@ -54,22 +55,18 @@ fun BooksScreen(
 
 @Composable
 fun BooksContent(
-    viewModel: BooksViewModel = hiltViewModel(),
+    books: List<Book>,
     padding: PaddingValues,
     deleteBook: (book: Book) -> Unit,
     navigateToBookScreen: (id: Int) -> Unit,
 ) {
 
-    val uiState = viewModel.uiState
-    val state = viewModel.uiState.lazyListState
-
     LazyColumn(
-        state = state,
         modifier = Modifier
             .fillMaxSize()
             .padding(padding)
     ) {
-        items(uiState.books) { book ->
+        items(books) { book ->
             BookCard(
                 book = book,
                 deleteBook = { deleteBook(book) },
