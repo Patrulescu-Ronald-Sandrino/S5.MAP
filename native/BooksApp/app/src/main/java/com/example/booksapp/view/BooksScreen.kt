@@ -2,7 +2,6 @@ package com.example.booksapp.view
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
@@ -29,14 +28,12 @@ fun BooksScreen(
 ) {
 //    val books by viewModel.books.observeAsState()
 //    val books by remember { mutableStateOf(viewModel.books) }
-    val books by viewModel.books.observeAsState()
 
     Scaffold(
         topBar = { TopAppBar(title = { Text(text = "Books") }) },
         content = {
             BooksContent(
                 padding = it,
-                books = books?.toList() ?: emptyList(),
                 navigateToBookScreen = navigateToBookScreen,
                 deleteBook = { book ->
                     viewModel.deleteBook(book)
@@ -56,22 +53,31 @@ fun BooksScreen(
 
 @Composable
 fun BooksContent(
+    viewModel: BooksViewModel = hiltViewModel(),
     padding: PaddingValues,
-    books: List<Book>,
     deleteBook: (book: Book) -> Unit,
     navigateToBookScreen: (id: Int) -> Unit,
 ) {
+    val books by viewModel.itemLiveData.observeAsState()
+
+    if (books.isNullOrEmpty()) {
+        Text(text = "No books!")
+        return
+    }
+
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(padding)
     ) {
-        items(items = books) {
-            book -> BookCard(
-                book = book,
-                deleteBook = { deleteBook(book) },
-                navigateToBookScreen = navigateToBookScreen
-            )
+        books?.forEach { book ->
+            item {
+                BookCard(
+                    book = book,
+                    deleteBook = { deleteBook(book) },
+                    navigateToBookScreen = navigateToBookScreen,
+                )
+            }
         }
     }
 }

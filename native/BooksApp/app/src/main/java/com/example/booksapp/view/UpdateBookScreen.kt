@@ -110,7 +110,11 @@ fun UpdateBookContent(
                 imeAction = ImeAction.Next,
             ),
             value = book.year.toString(),
-            onValueChange = { updateYear(it.toInt()) },
+            onValueChange = { updateYear(try {
+                it.toInt()
+            } catch (e: NumberFormatException) {
+                0
+            }) },
             placeholder = { Text("Year") },
             textStyle = TextStyle(color = Color.Magenta)
         )
@@ -140,7 +144,7 @@ fun UpdateBookContent(
                 navigateBack()
             }
         }) {
-            Text(text = "Add Book")
+            Text(text = "Update")
         }
     }
 }
