@@ -48,7 +48,28 @@ class _BooksScreenState extends State<BooksScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Books'),
+        title: RichText(
+          text: const TextSpan(
+            children: [
+              TextSpan(
+                text: 'Books ',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                ),
+              ),
+              TextSpan(
+                  text: '(',
+                  style: TextStyle(fontSize: 14, color: Colors.black)),
+              TextSpan(
+                  text: 'lent books are in orange',
+                  style: TextStyle(fontSize: 14, color: Colors.orange)),
+              TextSpan(
+                  text: ')',
+                  style: TextStyle(fontSize: 14, color: Colors.black)),
+            ],
+          ),
+        ),
       ),
       body: ListView.builder(
         itemCount: books.length,
@@ -56,12 +77,50 @@ class _BooksScreenState extends State<BooksScreen> {
           final book = books[index];
 
           return ListTile(
-            title: Text(book.title),
-            // TODO: show book lent
+            title: Text(
+              '${book.title} (${book.year})',
+              style: TextStyle(color: book.lent ? Colors.black : Colors.orange),
+            ),
             subtitle: Text(book.author),
-            // TODO: click book => view book details
-            trailing: Text(book.year
-                .toString()), // tODO delete book icon + click + confirm dialog + notification
+            trailing: InkWell( // allows to click on the child
+              child: Icon(
+                Icons.delete,
+                color: book.lent ? Colors.black : Colors.orange,
+                semanticLabel: 'Delete',
+              ),
+              onTap: () {
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Delete book'),
+                        content: const Text(
+                            'Are you sure you want to delete this book?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              setState(() {
+                                _bookRepository.deleteBook(book.id);
+                              });
+                            },
+                            child: const Text('Delete'),
+                          ),
+                        ],
+                      );
+                    });
+              },
+            ),
+            onTap: () {
+              // TODO: click book => view book details => edit book
+              print('TODO: view book details');
+            },
           );
         },
       ),
@@ -101,8 +160,7 @@ class _BooksScreenState extends State<BooksScreen> {
                             TextFormField(
                               decoration: const InputDecoration(
                                   border: UnderlineInputBorder(),
-                                  labelText: 'Title'
-                              ),
+                                  labelText: 'Title'),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter some text';
@@ -117,8 +175,7 @@ class _BooksScreenState extends State<BooksScreen> {
                             TextFormField(
                               decoration: const InputDecoration(
                                   border: UnderlineInputBorder(),
-                                  labelText: 'Author'
-                              ),
+                                  labelText: 'Author'),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter some text';
@@ -137,10 +194,10 @@ class _BooksScreenState extends State<BooksScreen> {
                               ],
                               decoration: const InputDecoration(
                                   border: UnderlineInputBorder(),
-                                  labelText: 'Year'
-                              ),
+                                  labelText: 'Year'),
                               validator: (value) {
-                                if (value == null || value.isEmpty ||
+                                if (value == null ||
+                                    value.isEmpty ||
                                     int.tryParse(value) == null ||
                                     int.parse(value) < 0) {
                                   return 'Please enter a valid year';
@@ -153,38 +210,38 @@ class _BooksScreenState extends State<BooksScreen> {
                             ),
                             const SizedBox(height: 10),
                             // checkboxlisttile without stateful widget https://stackoverflow.com/questions/58857826/flutter-checkbox-not-changing-updating-working
-                            StatefulBuilder(builder: (context, setState) {
-                              return CheckboxListTile(
-                                  title: const Text('Lent'),
-                                  controlAffinity: ListTileControlAffinity.leading,
-                                  value: _lent,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _lent = value ?? false;
+                            StatefulBuilder(
+                              builder: (context, setState) {
+                                return CheckboxListTile(
+                                    title: const Text('Lent'),
+                                    controlAffinity:
+                                        ListTileControlAffinity.leading,
+                                    value: _lent,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _lent = value ?? false;
+                                      });
                                     });
-                                  }
-                              );
-                            },),
+                              },
+                            ),
                           ],
-                        )
-                    ),
+                        )),
                     const SizedBox(height: 20),
                     ElevatedButton(
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
-                            setState((() =>
-                            {
-                              _bookRepository.addBook(Book(id: 0,
-                                  title: title,
-                                  author: author,
-                                  year: year,
-                                  lent: _lent)),
-                              showSnackBar('Book added'),
-                            }));
+                            setState((() => {
+                                  _bookRepository.addBook(Book(
+                                      id: 0,
+                                      title: title,
+                                      author: author,
+                                      year: year,
+                                      lent: _lent)),
+                                  showSnackBar('Book added'),
+                                }));
                           }
                         },
-                        child: const Text('Add')
-                    ),
+                        child: const Text('Add')),
                   ],
                 ),
               ),
