@@ -1,6 +1,8 @@
+import 'package:books_app/repository/BookRepository.dart';
+import 'package:books_app/repository/BookRepositoryImpl.dart';
 import 'package:flutter/material.dart';
 
-import 'domain/book.dart';
+import 'domain/Book.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,27 +38,29 @@ class BooksScreen extends StatefulWidget {
 }
 
 class _BooksScreenState extends State<BooksScreen> {
-  final  _books = [
-    Book(1, 'The Hobbit', 'J.R.R. Tolkien', 1937, false),
-    Book(2, 'The Lord of the Rings', 'J.R.R. Tolkien', 1954, true),
-    Book(3, 'The Silmarillion', 'J.R.R. Tolkien', 1977, false),
-    Book(4, 'The Chronicles of Narnia', 'C.S. Lewis', 1950, true),
-    Book(5, 'The Lion, the Witch and the Wardrobe', 'C.S. Lewis', 1950, false),
-    Book(6, 'The Magician\'s Nephew', 'C.S. Lewis', 1955, false)
-  ];
+  final BookRepository _bookRepository = BookRepositoryImpl();
+
+  // final books = [];
 
   @override
   Widget build(BuildContext context) {
+    final books = _bookRepository.getBooks();
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Books'),),
+      appBar: AppBar(
+        title: const Text('Books'),
+      ),
       body: ListView.builder(
-        itemCount: _books.length,
+        itemCount: books.length,
         itemBuilder: (context, index) {
-          final book = _books[index];
+          final book = books[index];
+
           return ListTile(
-            title: Text(book.title), // TODO: show book lent
-            subtitle: Text(book.author), // TODO: click book => view book details
-            trailing: Text(book.year.toString()), // tODO delete book + click
+            title: Text(book.title),
+            // TODO: show book lent
+            subtitle: Text(book.author),
+            // TODO: click book => view book details
+            trailing: Text(book.year.toString()), // tODO delete book icon + click + confirm dialog + notification
           );
         },
       ),
@@ -72,13 +76,39 @@ class _BooksScreenState extends State<BooksScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) {
+          showSnackBar(String message) => {_showSnackBar(context, message)};
+          
           return Scaffold(
-            appBar: AppBar(title: const Text('Add Book'),),
-            body: const Text('Add Book'), // TODO: Add Book Form
+            appBar: AppBar(
+              title: const Text('Add Book'),
+            ),
+            body: Container(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // TODO: Add Book Form + error notification
+                  ElevatedButton(
+                      onPressed: () => {
+                        setState((() => {
+                          _bookRepository.addBook(Book.invalid),
+                          showSnackBar('Book added'),
+                        }))
+                      },
+                      child: const Text('Add'))
+                ],
+              ),
+            ),
           );
         },
       ),
     );
     // throw UnimplementedError();
+  }
+
+  static void _showSnackBar(context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 }
