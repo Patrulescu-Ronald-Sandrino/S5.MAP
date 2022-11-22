@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'Book.freezed.dart';
-part 'Book.g.dart';
+part 'book.freezed.dart';
+part 'book.g.dart';
 
 // kotlin copy method in flutter https://github.com/dart-lang/language/issues/137 -> freezed https://pub.dev/packages/freezed
 // how to use freezed https://tomicriedel.medium.com/flutter-freezed-the-complete-crashcourse-c942e9aa2428

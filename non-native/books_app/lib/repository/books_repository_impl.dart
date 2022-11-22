@@ -1,9 +1,9 @@
 
 
-import 'package:books_app/domain/Book.dart';
-import 'package:books_app/repository/BookRepository.dart';
+import 'package:books_app/domain/book.dart';
+import 'package:books_app/repository/books_repository.dart';
 
-class BookRepositoryImpl implements BookRepository {
+class BooksRepositoryImpl implements BooksRepository {
   final _books = [
     const Book(id: 1, title: 'The Hobbit', author: 'J.R.R. Tolkien', year: 1937, lent: false),
     const Book(id: 2, title: 'The Lord of the Rings', author: 'J.R.R. Tolkien', year: 1954, lent: true),

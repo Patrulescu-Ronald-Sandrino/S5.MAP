@@ -1,8 +1,8 @@
 
 
-import '../domain/Book.dart';
+import '../domain/book.dart';
 
-abstract class BookRepository {
+abstract class BooksRepository {
   List<Book> getBooks();
   Book getBook(int id);
   void addBook(Book book);
