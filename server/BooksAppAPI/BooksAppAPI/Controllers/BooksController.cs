@@ -30,6 +30,15 @@ public class BooksController : ControllerBase
         return await _context.Books.ToListAsync();
     }
     
+    [HttpPost("add-all-and-get-all")]
+    public async Task<ActionResult<IEnumerable<Book>>> AddAllAndGetAll([FromBody] List<Book> books)
+    {
+        _logger.LogInformation("[POST] Adding books {books}", books);
+        _context.Books.AddRange(books);
+        await _context.SaveChangesAsync();
+        return await _context.Books.ToListAsync();
+    }
+    
     
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Book>> Get(int id)

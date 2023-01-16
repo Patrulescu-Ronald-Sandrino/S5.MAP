@@ -20,4 +20,5 @@ class Book with _$Book {
   factory Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);
 
   static const Book invalid = Book(id: 0, title: '', author: '', year: 0, lent: false);
+
 }

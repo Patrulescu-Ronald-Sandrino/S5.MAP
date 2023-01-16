@@ -3,6 +3,8 @@ import 'package:books_app/ui/books_view_model.dart';
 import 'package:books_app/ui/view_book.dart';
 import 'package:flutter/material.dart';
 
+import '../dao/Response.dart';
+import '../dao/persistence.dart';
 
 class BooksScreen extends StatefulWidget {
   const BooksScreen({Key? key}) : super(key: key);
@@ -12,7 +14,18 @@ class BooksScreen extends StatefulWidget {
 }
 
 class _BooksScreenState extends State<BooksScreen> {
-  final BooksViewModel _booksViewModel = BooksViewModel();
+  final BooksViewModel _booksViewModel =
+      BooksViewModel(); // TODO END remove line
+  final persistence = Persistence();
+  var source = "";
+
+  @override
+  void initState() {
+    super.initState();
+    persistence.addListener((hasConnection) {
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,61 +56,97 @@ class _BooksScreenState extends State<BooksScreen> {
           ),
         ),
       ),
-      body: ListView.builder(
-        itemCount: books.length,
-        itemBuilder: (context, index) {
-          final book = books[index];
+      body: RefreshIndicator(
+          onRefresh: () {
+            return Future.delayed(const Duration(milliseconds: 500), () {
+              setState(() {});
+            });
+          },
+          child: FutureBuilder<Response>(
+            future: persistence.getBooks(),
+            builder: (context, snapshot) {
+              List<Widget> children = [];
 
-          return ListTile(
-            title: Text(
-              '${book.title} (${book.year})',
-              style: TextStyle(color: book.lent ? Colors.orange : Colors.black),
-            ),
-            subtitle: Text(book.author),
-            trailing: InkWell(
-              // allows to click on the child
-              child: Icon(
-                Icons.delete,
-                color: book.lent ? Colors.orange : Colors.black,
-                semanticLabel: 'Delete',
-              ),
-              onTap: () {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text('Delete book'),
-                        content: const Text(
-                            'Are you sure you want to delete this book?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('Cancel'),
+              if (snapshot.hasData) {
+                var books = snapshot.data?.books ?? [];
+
+                // Future(() async {
+                //   setState(() => source = snapshot.data?.source ?? "");
+                // });
+
+                children = <Widget>[
+                  Text("Connected to: ${snapshot.data?.source}"),
+                  Flexible(
+                      child: ListView.builder(
+                    itemCount: books.length,
+                    itemBuilder: (context, index) {
+                      final book = books[index];
+
+                      return ListTile(
+                        title: Text(
+                          '${book.title} (${book.year})',
+                          style: TextStyle(
+                              color: book.lent ? Colors.orange : Colors.black),
+                        ),
+                        subtitle: Text(book.author),
+                        trailing: InkWell(
+                          // allows to click on the child
+                          child: Icon(
+                            Icons.delete,
+                            color: book.lent ? Colors.orange : Colors.black,
+                            semanticLabel: 'Delete',
                           ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              setState(() {
-                                _booksViewModel.deleteBook(book.id);
-                              });
-                            },
-                            child: const Text('Delete'),
-                          ),
-                        ],
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text('Delete book'),
+                                    content: const Text(
+                                        'Are you sure you want to delete this book?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('Cancel'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          setState(() {
+                                            _booksViewModel.deleteBook(book.id);
+                                          });
+                                        },
+                                        child: const Text('Delete'),
+                                      ),
+                                    ],
+                                  );
+                                });
+                          },
+                        ),
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      ViewBookScreen(book.id)))
+                              .then((value) => setState(() {}));
+                        },
                       );
-                    });
-              },
-            ),
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => ViewBookScreen(book.id)))
-                  .then((value) => setState(() {}));
+                    },
+                  ))
+                ];
+              } else if (snapshot.hasError) {
+                children = <Widget>[const Text("Error occurred!")];
+              } else {
+                children = <Widget>[const Text("Loading...")];
+              }
+
+              return Column(
+                children: children,
+              );
             },
-          );
-        },
-      ),
+          )),
       floatingActionButton: FloatingActionButton(
         onPressed: _addBookPushed,
         backgroundColor: Colors.green,

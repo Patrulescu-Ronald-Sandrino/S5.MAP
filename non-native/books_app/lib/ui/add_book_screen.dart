@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../domain/book.dart';
-import '../util.dart';
+import '../util/util.dart';
 import 'books_view_model.dart';
 
 class AddBookScreen extends StatefulWidget {
