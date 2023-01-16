@@ -26,11 +26,13 @@ class Db {
     });
   }
 
-  Future<void> addBooks(List<Book> books) async {
+  Future<void> replaceBooks(List<Book> books) async {
     // Get a reference to the database.
     final db = await _getDatabase();
 
     Batch batch = db.batch();
+    batch.delete('books', where: 'id = ?', whereArgs: [0]);
+    
     for (var book in books) {
       var bookMap = book.toJson();
       bookMap['lent'] = book.lent ? 1 : 0;

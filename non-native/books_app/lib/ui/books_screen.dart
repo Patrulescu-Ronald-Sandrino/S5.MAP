@@ -29,8 +29,6 @@ class _BooksScreenState extends State<BooksScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final books = _booksViewModel.getBooks();
-
     return Scaffold(
       appBar: AppBar(
         title: RichText(

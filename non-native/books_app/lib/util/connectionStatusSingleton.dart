@@ -49,11 +49,14 @@ class ConnectionStatusSingleton {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         hasConnection = true;
+        print("[ConnectionStatusSingleton] Connected to the Internet");
       } else {
         hasConnection = false;
+        print("[ConnectionStatusSingleton] Not connected to the Internet");
       }
     } on SocketException catch(_) {
       hasConnection = false;
+      print("[ConnectionStatusSingleton] Not connected to the Internet: Caught SocketException: ${_}");
     }
 
     //The connection status changed send out an update to all listeners

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import '../domain/book.dart';
 import '../util/connectionStatusSingleton.dart';
 import 'Response.dart';
@@ -5,25 +7,14 @@ import 'implementation/api.dart';
 import 'implementation/db.dart';
 
 class Persistence {
-  Persistence() {
-    _connectionStatusSingleton.initialize();
-  }
+  factory Persistence() { return _singleton; }
 
   void addListener(void Function(bool hasConnection) listener) {
     _connectionStatusSingleton.connectionChange.listen(listener);
   }
 
   Future<Response> getBooks() async {
-    // TODO: remove commented out try/catch variant after trying it out
-    // TODO: try it out along with all other implemented persistence methods
-    // try {
-    //   return Response("API", await _synchronizeApiToDb());
-    // } catch (e) {
-    //   debugPrint(e.toString());
-    //   print("API GET books is NOT responding. Getting books from DB");
-    //   return Response("DB", await _db.getBooks());
-    // }
-    print("connection status = ${_connectionStatusSingleton.hasConnection}");
+    print("[Persistence.getBooks()] connection status = ${_connectionStatusSingleton.hasConnection}");
     if (_connectionStatusSingleton.hasConnection) {
       try {
         print("API GET books - START");
@@ -47,7 +38,7 @@ class Persistence {
   Future<bool> addBook(Book book) async {
     var isBookNew = true;
 
-    print("connection status = ${_connectionStatusSingleton.hasConnection}");
+    print("[Persistence.addBook()] connection status = ${_connectionStatusSingleton.hasConnection}");
     if (_connectionStatusSingleton.hasConnection) {
       try {
         print("API ADD book - START book = $book");
@@ -75,7 +66,7 @@ class Persistence {
   /// @def: deletes the book if there's connection to the server <br>
   /// @return: whether the book was deleted
   Future<bool> deleteBook(int id) async {
-    print("connection status = ${_connectionStatusSingleton.hasConnection}");
+    print("[Persistence.deleteBook()] connection status = ${_connectionStatusSingleton.hasConnection}");
     if (!_connectionStatusSingleton.hasConnection) return false;
 
     try {
@@ -98,6 +89,9 @@ class Persistence {
   }
 
   //region privates
+  static final Persistence _singleton = Persistence._internal();
+  Persistence._internal() { _connectionStatusSingleton.initialize(); }
+
   static const _api = Api();
   static const _db = Db();
   final _connectionStatusSingleton = ConnectionStatusSingleton.getInstance();
@@ -108,8 +102,7 @@ class Persistence {
     var booksToAdd = (dbBooks).where((element) => element.id == 0).toList();
     var apiBooks = await (booksToAdd.isEmpty ? _api.getBooks() : _api.addBooksAndGetBooks(booksToAdd));
 
-    await _db.addBooks(apiBooks);
-    var newDbBooks = await _db.getBooks(); // TODO END remove this line
+    await _db.replaceBooks(apiBooks);
 
     return apiBooks;
   }

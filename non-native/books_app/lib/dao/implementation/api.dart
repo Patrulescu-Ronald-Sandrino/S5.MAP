@@ -20,7 +20,7 @@ class Api {
   }
 
   Future<List<Book>> addBooksAndGetBooks(List<Book> booksToAdd) async {
-    final response = await http.post(_getUrl('add-all-and-get-all'), headers: {"Accept": "application/json", "content-type": "application/json",}, body: json.encode(booksToAdd));
+    final response = await http.post(_getUrl('add-all-and-get-all'), headers: headersSendAcceptJson, body: json.encode(booksToAdd));
 
     if (response.statusCode != 200) {
       debugPrint("Failed to add books.\nresponse.reasonPhrase = ${response.reasonPhrase}\nresponse.body = ${response.body}");
@@ -33,9 +33,9 @@ class Api {
   }
 
   Future<Book> addBook(Book book) async {
-    final response = await http.post(_getUrl(''), body: json.encode(book));
+    final response = await http.post(_getUrl(''), headers: headersSendAcceptJson, body: json.encode(book));
 
-    if (response.statusCode != 200) {
+    if (response.statusCode != 201) {
       debugPrint("Failed to add book.\nresponse.reasonPhrase = ${response.reasonPhrase}\nresponse.body = ${response.body}");
       throw Exception('Failed to add book');
     }
@@ -55,6 +55,8 @@ class Api {
   }
 
   //region private
+  static const headersSendAcceptJson = {"Accept": "application/json", "content-type": "application/json",};
+
   static Uri _getUrl(String path) {
     return Uri.parse('https://10.0.2.2:7235/Books/$path');
   }

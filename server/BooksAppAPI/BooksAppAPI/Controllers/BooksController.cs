@@ -73,7 +73,7 @@ public class BooksController : ControllerBase
         _context.Entry(book).State = EntityState.Modified;
         await _context.SaveChangesAsync();
         _logger.LogInformation("[PUT] Book with id {id} updated", id);
-        return NoContent();
+        return Ok();
     }
     
     [HttpDelete("{id:int}")]
@@ -88,7 +88,7 @@ public class BooksController : ControllerBase
         _context.Books.Remove(book);
         await _context.SaveChangesAsync();
         _logger.LogInformation("[DELETE] Book with id {id} deleted", id);
-        return NoContent();
+        return Ok();
     }
     
 }

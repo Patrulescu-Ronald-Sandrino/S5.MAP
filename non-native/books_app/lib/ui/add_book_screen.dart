@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../dao/persistence.dart';
 import '../domain/book.dart';
 import '../util/util.dart';
-import 'books_view_model.dart';
 
 class AddBookScreen extends StatefulWidget {
   const AddBookScreen({super.key});
@@ -13,7 +13,7 @@ class AddBookScreen extends StatefulWidget {
 }
 
 class _AddBookScreenState extends State<AddBookScreen> {
-  final BooksViewModel _booksViewModel = BooksViewModel();
+  final persistence = Persistence();
   var _lent = false;
 
   @override
@@ -106,18 +106,21 @@ class _AddBookScreenState extends State<AddBookScreen> {
                   )),
               const SizedBox(height: 20),
               ElevatedButton(
-                  onPressed: () {
-                    if (formKey.currentState!.validate()) {
-                      setState((() => {
-                        _booksViewModel.addBook(Book(
-                            id: 0,
-                            title: title,
-                            author: author,
-                            year: year,
-                            lent: _lent)),
-                      }));
-                    }
-                    showSnackBar(context, 'Book added');
+                  onPressed: () async {
+                    if (!formKey.currentState!.validate()) return;
+                    var book = Book(
+                        id: 0,
+                        title: title,
+                        author: author,
+                        year: year,
+                        lent: _lent
+                    );
+                    var message = "Book added";
+                    if (!await persistence.addBook(book)) message = "No server access! Book is added locally and will be synchronized when online";
+                    setState((() {}));
+
+                    if (!mounted) return;
+                    showSnackBar(context, message);
                   },
                   child: const Text('Add')),
             ],
