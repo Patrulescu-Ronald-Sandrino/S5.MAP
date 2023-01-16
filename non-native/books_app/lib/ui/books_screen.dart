@@ -1,10 +1,10 @@
 import 'package:books_app/ui/add_book_screen.dart';
-import 'package:books_app/ui/books_view_model.dart';
 import 'package:books_app/ui/view_book.dart';
 import 'package:flutter/material.dart';
 
-import '../dao/Response.dart';
+import '../dao/response.dart';
 import '../dao/persistence.dart';
+import '../util/util.dart';
 
 class BooksScreen extends StatefulWidget {
   const BooksScreen({Key? key}) : super(key: key);
@@ -14,21 +14,14 @@ class BooksScreen extends StatefulWidget {
 }
 
 class _BooksScreenState extends State<BooksScreen> {
-  final BooksViewModel _booksViewModel =
-      BooksViewModel(); // TODO END remove line
-  final persistence = Persistence();
-  var source = "";
-
-  @override
-  void initState() {
-    super.initState();
-    persistence.addListener((hasConnection) {
-      setState(() {});
-    });
-  }
+  final _persistence = Persistence();
 
   @override
   Widget build(BuildContext context) {
+    _persistence.addListener((hasConnection) {
+      setState(() {});
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: RichText(
@@ -61,7 +54,7 @@ class _BooksScreenState extends State<BooksScreen> {
             });
           },
           child: FutureBuilder<Response>(
-            future: persistence.getBooks(),
+            future: _persistence.getBooks(),
             builder: (context, snapshot) {
               List<Widget> children = [];
 
@@ -110,11 +103,19 @@ class _BooksScreenState extends State<BooksScreen> {
                                         child: const Text('Cancel'),
                                       ),
                                       TextButton(
-                                        onPressed: () {
+                                        onPressed: () async {
+                                          var message = "Book deleted";
+
+                                          if (!await _persistence
+                                              .deleteBook(book.id)) {
+                                            message =
+                                                "No server access! Please retry when online";
+                                          }
+                                          setState(() {});
+
+                                          if (!mounted) return;
+                                          showSnackBar(context, message);
                                           Navigator.of(context).pop();
-                                          setState(() {
-                                            _booksViewModel.deleteBook(book.id);
-                                          });
                                         },
                                         child: const Text('Delete'),
                                       ),

@@ -1,23 +1,30 @@
+import 'package:books_app/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../dao/persistence.dart';
 import '../domain/book.dart';
-import 'books_view_model.dart';
 
-class UpdateBookScreen extends StatelessWidget {
-  UpdateBookScreen(this.book, {super.key});
+class UpdateBookScreen extends StatefulWidget {
+  const UpdateBookScreen({required this.book, super.key});
 
   final Book book;
 
-  final BooksViewModel _booksViewModel = BooksViewModel();
+  @override
+  State<UpdateBookScreen> createState() => UpdateBookScreenState();
+}
+
+class UpdateBookScreenState extends State<UpdateBookScreen> {
+  final _persistence = Persistence();
+  late final Book _book = widget.book;
 
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
-    String title = book.title;
-    String author = book.author;
-    int year = book.year;
-    var lent = book.lent;
+    String title = _book.title;
+    String author = _book.author;
+    int year = _book.year;
+    var lent = _book.lent;
 
     return Scaffold(
       appBar: AppBar(
@@ -35,7 +42,7 @@ class UpdateBookScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       TextFormField(
-                        initialValue: book.title,
+                        initialValue: _book.title,
                         decoration: const InputDecoration(
                             border: UnderlineInputBorder(), labelText: 'Title'),
                         validator: (value) {
@@ -50,7 +57,7 @@ class UpdateBookScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
-                        initialValue: book.author,
+                        initialValue: _book.author,
                         decoration: const InputDecoration(
                             border: UnderlineInputBorder(),
                             labelText: 'Author'),
@@ -66,7 +73,7 @@ class UpdateBookScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                       TextFormField(
-                        initialValue: book.year.toString(),
+                        initialValue: _book.year.toString(),
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                           LengthLimitingTextInputFormatter(4)
@@ -105,16 +112,25 @@ class UpdateBookScreen extends StatelessWidget {
                   )),
               const SizedBox(height: 10),
               ElevatedButton(
-                onPressed: () {
-                  if (formKey.currentState!.validate()) {
-                    _booksViewModel.updateBook(Book(
-                        id: book.id,
-                        title: title,
-                        author: author,
-                        year: year,
-                        lent: lent));
-                    Navigator.pop(context);
+                onPressed: () async {
+                  if (!formKey.currentState!.validate()) return;
+
+                  var message = "Book updated";
+                  var book = Book(
+                      id: _book.id,
+                      title: title,
+                      author: author,
+                      year: year,
+                      lent: lent);
+
+                  if (!await _persistence.updateBook(book)) {
+                    message = "No server access! Please retry when online";
                   }
+                  setState(() {});
+
+                  if (!mounted) return;
+                  showSnackBar(context, message);
+                  Navigator.pop(context);
                 },
                 child: const Text('Apply'),
               ),

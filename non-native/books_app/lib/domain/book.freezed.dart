@@ -23,7 +23,7 @@ class _$BookTearOff {
   const _$BookTearOff();
 
   _Book call(
-      {required int id,
+      {required String id,
       required String title,
       required String author,
       required int year,
@@ -47,7 +47,7 @@ const $Book = _$BookTearOff();
 
 /// @nodoc
 mixin _$Book {
-  int get id => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get author => throw _privateConstructorUsedError;
   int get year => throw _privateConstructorUsedError;
@@ -62,7 +62,7 @@ mixin _$Book {
 abstract class $BookCopyWith<$Res> {
   factory $BookCopyWith(Book value, $Res Function(Book) then) =
       _$BookCopyWithImpl<$Res>;
-  $Res call({int id, String title, String author, int year, bool lent});
+  $Res call({String id, String title, String author, int year, bool lent});
 }
 
 /// @nodoc
@@ -85,7 +85,7 @@ class _$BookCopyWithImpl<$Res> implements $BookCopyWith<$Res> {
       id: id == freezed
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       title: title == freezed
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -111,7 +111,7 @@ abstract class _$BookCopyWith<$Res> implements $BookCopyWith<$Res> {
   factory _$BookCopyWith(_Book value, $Res Function(_Book) then) =
       __$BookCopyWithImpl<$Res>;
   @override
-  $Res call({int id, String title, String author, int year, bool lent});
+  $Res call({String id, String title, String author, int year, bool lent});
 }
 
 /// @nodoc
@@ -135,7 +135,7 @@ class __$BookCopyWithImpl<$Res> extends _$BookCopyWithImpl<$Res>
       id: id == freezed
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       title: title == freezed
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -169,7 +169,7 @@ class _$_Book implements _Book {
   factory _$_Book.fromJson(Map<String, dynamic> json) => _$$_BookFromJson(json);
 
   @override
-  final int id;
+  final String id;
   @override
   final String title;
   @override
@@ -184,27 +184,6 @@ class _$_Book implements _Book {
     return 'Book(id: $id, title: $title, author: $author, year: $year, lent: $lent)';
   }
 
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _Book &&
-            const DeepCollectionEquality().equals(other.id, id) &&
-            const DeepCollectionEquality().equals(other.title, title) &&
-            const DeepCollectionEquality().equals(other.author, author) &&
-            const DeepCollectionEquality().equals(other.year, year) &&
-            const DeepCollectionEquality().equals(other.lent, lent));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(id),
-      const DeepCollectionEquality().hash(title),
-      const DeepCollectionEquality().hash(author),
-      const DeepCollectionEquality().hash(year),
-      const DeepCollectionEquality().hash(lent));
-
   @JsonKey(ignore: true)
   @override
   _$BookCopyWith<_Book> get copyWith =>
@@ -218,7 +197,7 @@ class _$_Book implements _Book {
 
 abstract class _Book implements Book {
   const factory _Book(
-      {required int id,
+      {required String id,
       required String title,
       required String author,
       required int year,
@@ -227,7 +206,7 @@ abstract class _Book implements Book {
   factory _Book.fromJson(Map<String, dynamic> json) = _$_Book.fromJson;
 
   @override
-  int get id;
+  String get id;
   @override
   String get title;
   @override

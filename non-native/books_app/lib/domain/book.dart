@@ -10,7 +10,7 @@ part 'book.g.dart';
 // flutter pub run build_runner build --delete-conflicting-outputs
 class Book with _$Book {
   const factory Book({
-    required int id,
+    required String id,
     required String title,
     required String author,
     required int year,
@@ -19,6 +19,10 @@ class Book with _$Book {
 
   factory Book.fromJson(Map<String, dynamic> json) => _$BookFromJson(json);
 
-  static const Book invalid = Book(id: 0, title: '', author: '', year: 0, lent: false);
-
+  @override
+  bool operator ==(Object other) {
+    return other is Book &&
+        other.runtimeType == runtimeType &&
+        other.id == id;
+  }
 }

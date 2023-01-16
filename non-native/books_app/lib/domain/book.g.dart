@@ -7,7 +7,7 @@ part of 'book.dart';
 // **************************************************************************
 
 _$_Book _$$_BookFromJson(Map<String, dynamic> json) => _$_Book(
-      id: json['id'] as int,
+      id: json['id'] as String,
       title: json['title'] as String,
       author: json['author'] as String,
       year: json['year'] as int,

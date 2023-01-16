@@ -27,16 +27,18 @@ public class BooksController : ControllerBase
     public async Task<ActionResult<IEnumerable<Book>>> Get()
     {
         _logger.LogInformation($"[GET] Getting all books");
-        return await _context.Books.ToListAsync();
+        return await _context.Books.OrderBy(book => book.Year).ToListAsync();
     }
     
-    [HttpPost("add-all-and-get-all")]
-    public async Task<ActionResult<IEnumerable<Book>>> AddAllAndGetAll([FromBody] List<Book> books)
+    [HttpPost("add-all-and-get")]
+    public async Task<ActionResult<IEnumerable<Book>>> AddAllAndGet([FromBody] List<Book> books)
     {
         _logger.LogInformation("[POST] Adding books {books}", books);
-        _context.Books.AddRange(books);
+        var newBooks = books.Select(book => { book.Id = Guid.NewGuid(); return book; }).ToList();
+        _context.Books.AddRange(newBooks);
         await _context.SaveChangesAsync();
-        return await _context.Books.ToListAsync();
+        _logger.LogInformation("[POST] Added books {books}", newBooks);
+        return newBooks;
     }
     
     
@@ -57,6 +59,7 @@ public class BooksController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Book>> Post(Book book)
     {
+        book.Id = Guid.NewGuid();
         _context.Books.Add(book);
         await _context.SaveChangesAsync();
         _logger.LogInformation("Book with id {id} created", book.Id);
@@ -64,12 +67,12 @@ public class BooksController : ControllerBase
     }
     
     [HttpPut("")]
-    public async Task<IActionResult> Put(Book book)
+    public async Task<ActionResult<Book>> Put(Book book)
     {
         _context.Entry(book).State = EntityState.Modified;
         await _context.SaveChangesAsync();
         _logger.LogInformation("[PUT] Book with id {id} updated", book.Id);
-        return Ok();
+        return book;
     }
     
     [HttpDelete("{id:guid}")]
