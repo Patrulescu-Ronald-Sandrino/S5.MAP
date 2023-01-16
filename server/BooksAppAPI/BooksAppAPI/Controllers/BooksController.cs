@@ -40,8 +40,8 @@ public class BooksController : ControllerBase
     }
     
     
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<Book>> Get(int id)
+    [HttpGet("{id:guid}")]
+    public async Task<ActionResult<Book>> Get(Guid id)
     {
         _logger.LogInformation("[GET] Looking for book with id {id}", id);
         var book = await _context.Books.FindAsync(id);
@@ -63,21 +63,17 @@ public class BooksController : ControllerBase
         return CreatedAtAction(nameof(Get), new { id = book.Id }, book);
     }
     
-    [HttpPut("{id:int}")]
-    public async Task<IActionResult> Put(int id, Book book)
+    [HttpPut("")]
+    public async Task<IActionResult> Put(Book book)
     {
-        if (id != book.Id)
-        {
-            return BadRequest("[PUT] Book id does not match");
-        }
         _context.Entry(book).State = EntityState.Modified;
         await _context.SaveChangesAsync();
-        _logger.LogInformation("[PUT] Book with id {id} updated", id);
+        _logger.LogInformation("[PUT] Book with id {id} updated", book.Id);
         return Ok();
     }
     
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(int id)
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id)
     {
         var book = await _context.Books.FindAsync(id);
         if (book == null)
