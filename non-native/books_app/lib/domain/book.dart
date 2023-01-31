@@ -4,10 +4,7 @@ part 'book.freezed.dart';
 part 'book.g.dart';
 
 // kotlin copy method in flutter https://github.com/dart-lang/language/issues/137 -> freezed https://pub.dev/packages/freezed
-// how to use freezed https://tomicriedel.medium.com/flutter-freezed-the-complete-crashcourse-c942e9aa2428
 @freezed
-// run the following in the project directory after changing this file:
-// flutter pub run build_runner build --delete-conflicting-outputs
 class Book with _$Book {
   const factory Book({
     required String id,

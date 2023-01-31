@@ -22,3 +22,5 @@ If you want to use it, you need to run the following command:
 
 It has to be run just once, after you write the @freezed class. But you can also add a task to run
 before launch in the run configuration w/ the full path to the flutter bin and the args above.
+
+more on freezed: to use freezed https://tomicriedel.medium.com/flutter-freezed-the-complete-crashcourse-c942e9aa2428
