@@ -1,4 +1,4 @@
-
+!!! remember to update the database password in appsettings.json
 
 ```
 dotnet ef migrations add InitialMigration
